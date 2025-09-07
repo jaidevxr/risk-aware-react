@@ -57,6 +57,22 @@ export default {
           border: "hsl(var(--sidebar-border))",
           ring: "hsl(var(--sidebar-ring))",
         },
+        risk: {
+          high: "hsl(var(--risk-high))",
+          medium: "hsl(var(--risk-medium))",
+          low: "hsl(var(--risk-low))",
+          safe: "hsl(var(--risk-safe))",
+        },
+      },
+      backgroundImage: {
+        "gradient-primary": "var(--gradient-primary)",
+        "gradient-card": "var(--gradient-card)",
+        "gradient-overlay": "var(--gradient-overlay)",
+      },
+      boxShadow: {
+        disaster: "var(--shadow-disaster)",
+        "card-soft": "var(--shadow-card)",
+        intense: "var(--shadow-intense)",
       },
       borderRadius: {
         lg: "var(--radius)",
