@@ -1,12 +1,18 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { motion } from 'framer-motion';
 import { DisasterNavbar } from '@/components/DisasterNavbar';
 import { DisasterSidebar } from '@/components/DisasterSidebar';
-import { DisasterMap } from '@/components/DisasterMap';
+import { SimpleMap } from '@/components/SimpleMap';
 import { DashboardStats } from '@/components/DashboardStats';
 import { DisasterCharts } from '@/components/DisasterCharts';
+import { useUserLocation } from '@/hooks/useUserLocation';
+import { useWeatherData } from '@/hooks/useWeatherData';
 
 const Index = () => {
+  const { location: userLocation, loading: locationLoading, error: locationError } = useUserLocation();
+  const { weatherData, loading: weatherLoading } = useWeatherData(userLocation);
+  const [selectedLocation, setSelectedLocation] = useState<{ lat: number; lng: number; name: string } | null>(null);
+
   const handleFilterChange = (filter: string) => {
     console.log('Filter changed:', filter);
   };
@@ -15,10 +21,20 @@ const Index = () => {
     console.log('Refreshing data...');
   };
 
+  const handleLocationSelect = (location: { lat: number; lng: number; name: string }) => {
+    setSelectedLocation(location);
+    console.log('Location selected:', location);
+  };
+
   return (
     <div className="min-h-screen bg-gradient-primary">
       {/* Navigation */}
-      <DisasterNavbar onFilterChange={handleFilterChange} onRefresh={handleRefresh} />
+      <DisasterNavbar 
+        onFilterChange={handleFilterChange} 
+        onRefresh={handleRefresh}
+        onLocationSelect={handleLocationSelect}
+        userLocation={userLocation}
+      />
       
       {/* Main Layout */}
       <div className="flex h-[calc(100vh-140px)]">
@@ -34,7 +50,7 @@ const Index = () => {
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5, delay: 0.2 }}
           >
-            <DashboardStats />
+            <DashboardStats weatherData={weatherData} userLocation={userLocation} />
           </motion.div>
           
           {/* Map and Charts Container */}
@@ -46,7 +62,11 @@ const Index = () => {
               animate={{ opacity: 1, scale: 1 }}
               transition={{ duration: 0.6, delay: 0.4 }}
             >
-              <DisasterMap />
+              <SimpleMap 
+                userLocation={userLocation}
+                selectedLocation={selectedLocation}
+                weatherData={weatherData}
+              />
             </motion.div>
             
             {/* Charts */}

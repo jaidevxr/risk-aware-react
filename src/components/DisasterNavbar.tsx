@@ -3,14 +3,22 @@ import { motion } from 'framer-motion';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { Bell, Settings, RefreshCw, Download, AlertTriangle, Shield } from 'lucide-react';
+import { Bell, Settings, RefreshCw, Download, AlertTriangle, Shield, MapPin } from 'lucide-react';
+import { LocationSearch } from './LocationSearch';
 
 interface DisasterNavbarProps {
   onFilterChange?: (filter: string) => void;
   onRefresh?: () => void;
+  onLocationSelect: (location: { lat: number; lng: number; name: string }) => void;
+  userLocation: { latitude: number; longitude: number } | null;
 }
 
-export const DisasterNavbar: React.FC<DisasterNavbarProps> = ({ onFilterChange, onRefresh }) => {
+export const DisasterNavbar: React.FC<DisasterNavbarProps> = ({ 
+  onFilterChange, 
+  onRefresh, 
+  onLocationSelect,
+  userLocation 
+}) => {
   return (
     <motion.nav 
       className="w-full bg-gradient-card border-b shadow-card-soft backdrop-blur-sm"
@@ -36,15 +44,33 @@ export const DisasterNavbar: React.FC<DisasterNavbarProps> = ({ onFilterChange, 
             </div>
           </motion.div>
 
-          {/* Filters and Controls */}
+          {/* Search and Controls */}
           <div className="flex items-center gap-4">
+            {/* Location Search */}
+            <div className="w-64">
+              <LocationSearch onLocationSelect={onLocationSelect} />
+            </div>
+
+            {/* User Location Status */}
+            <div className="flex items-center gap-2">
+              <MapPin className="w-4 h-4 text-muted-foreground" />
+              <span className="text-sm text-muted-foreground">
+                {userLocation ? 'GPS Active' : 'No GPS'}
+              </span>
+              {userLocation && (
+                <Badge variant="outline" className="bg-risk-safe/10 text-risk-safe border-risk-safe/20">
+                  Live
+                </Badge>
+              )}
+            </div>
+
             {/* Disaster Type Filter */}
             <Select onValueChange={onFilterChange}>
-              <SelectTrigger className="w-48 bg-background/50 border-primary/20">
-                <SelectValue placeholder="Filter by disaster type" />
+              <SelectTrigger className="w-40 bg-background/50 border-primary/20">
+                <SelectValue placeholder="Filter" />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="all">All Disasters</SelectItem>
+                <SelectItem value="all">All</SelectItem>
                 <SelectItem value="flood">Floods</SelectItem>
                 <SelectItem value="cyclone">Cyclones</SelectItem>
                 <SelectItem value="drought">Droughts</SelectItem>

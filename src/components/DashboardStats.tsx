@@ -42,7 +42,12 @@ const StatCard: React.FC<StatCardProps> = ({ icon, title, value, change, changeT
   </motion.div>
 );
 
-export const DashboardStats = () => {
+interface DashboardStatsProps {
+  weatherData: any;
+  userLocation: { latitude: number; longitude: number } | null;
+}
+
+export const DashboardStats: React.FC<DashboardStatsProps> = ({ weatherData, userLocation }) => {
   const stats = [
     {
       icon: <AlertTriangle className="w-5 h-5" />,
@@ -82,26 +87,26 @@ export const DashboardStats = () => {
     {
       icon: <Thermometer className="w-4 h-4" />,
       label: "Temperature",
-      value: "32°C",
-      status: "high"
+      value: weatherData ? `${weatherData.temperature}°C` : "Loading...",
+      status: weatherData && weatherData.temperature > 35 ? "high" : "normal"
     },
     {
       icon: <Droplets className="w-4 h-4" />,
       label: "Humidity",
-      value: "78%",
+      value: weatherData ? `${weatherData.humidity}%` : "Loading...",
       status: "normal"
     },
     {
       icon: <Wind className="w-4 h-4" />,
       label: "Wind Speed",
-      value: "15 km/h",
-      status: "normal"
+      value: weatherData ? `${weatherData.windSpeed} km/h` : "Loading...",
+      status: weatherData && weatherData.windSpeed > 25 ? "high" : "normal"
     },
     {
       icon: <Sun className="w-4 h-4" />,
       label: "UV Index",
-      value: "8",
-      status: "high"
+      value: weatherData ? `${weatherData.uvIndex}` : "Loading...",
+      status: weatherData && weatherData.uvIndex > 7 ? "high" : "normal"
     }
   ];
 
